@@ -125,6 +125,7 @@
 %define with_rrdtool 0%{!?_without_rrdtool:1}
 %define with_sensors 0%{!?_without_sensors:1}
 %define with_serial 0%{!?_without_serial:1}
+%define with_slurm 0%{!?_without_slurm:1}
 %define with_smart 0%{!?_without_smart:1}
 %define with_snmp 0%{!?_without_snmp:1}
 %define with_snmp_agent 0%{!?_without_snmp_agent:1}
@@ -1626,6 +1627,12 @@ Collectd utilities
 %define _with_sigrok --disable-sigrok
 %endif
 
+%if %{with_slurm}
+%define _with_slurm --enable-slurm
+%else
+%define _with_slurm --disable-slurm
+%endif
+
 %if %{with_smart}
 %define _with_smart --enable-smart
 %else
@@ -1988,6 +1995,7 @@ Collectd utilities
 	%{?_with_sensors} \
 	%{?_with_serial} \
 	%{?_with_sigrok} \
+	%{?_with_slurm} \
 	%{?_with_smart} \
 	%{?_with_snmp} \
 	%{?_with_snmp_agent} \
@@ -2292,6 +2300,9 @@ fi
 %endif
 %if %{with_serial}
 %{_libdir}/%{name}/serial.so
+%endif
+%if %{with_slurm}
+%{_libdir}/%{name}/slurm.so
 %endif
 %if %{with_statsd}
 %{_libdir}/%{name}/statsd.so
