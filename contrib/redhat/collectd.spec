@@ -85,7 +85,7 @@
 %define with_log_logstash 0%{!?_without_log_logstash:1}
 %define with_logfile 0%{!?_without_logfile:1}
 %define with_lua 0%{!?_without_lua:1}
-%define with_lvm 0%{!?_without_lvm:1}
+%define with_lvm 0%{!?_without_lvm:0}
 %define with_madwifi 0%{!?_without_madwifi:1}
 %define with_mbmon 0%{!?_without_mbmon:1}
 %define with_mcelog 0%{!?_without_mcelog:1}
@@ -248,8 +248,8 @@
 
 Summary:	Statistics collection and monitoring daemon
 Name:		collectd
-Version:	5.7.1
-Release:	8%{?dist}
+Version:	5.8.0
+Release:	2%{?dist}
 URL:		https://collectd.org
 Source:		https://collectd.org/files/%{name}-%{version}.tar.bz2
 License:	GPLv2
@@ -825,6 +825,16 @@ Requires:	%{name}%{?_isa} = %{version}-%{release}
 Uses libsigrok as a backend, allowing any sigrok-supported device to have its
 measurements fed to collectd. This includes multimeters, sound level meters,
 thermometers, and much more.
+%endif
+
+%if %{with_slurm}
+%package slurm
+Summary:	slurm plugin for collectd
+Group:		System Environment/Daemons
+Requires:	%{name}%{?_isa} = %{version}-%{release}
+BuildRequires:  slurm-devel
+%description slurm
+Gathers slurm per-partition node and job states using libslurm.
 %endif
 
 %if %{with_smart}
@@ -2301,9 +2311,6 @@ fi
 %if %{with_serial}
 %{_libdir}/%{name}/serial.so
 %endif
-%if %{with_slurm}
-%{_libdir}/%{name}/slurm.so
-%endif
 %if %{with_statsd}
 %{_libdir}/%{name}/statsd.so
 %endif
@@ -2678,6 +2685,11 @@ fi
 %if %{with_sigrok}
 %files sigrok
 %{_libdir}/%{name}/sigrok.so
+%endif
+
+%if %{with_slurm}
+%files slurm
+%{_libdir}/%{name}/slurm.so
 %endif
 
 %if %{with_smart}
